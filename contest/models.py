@@ -68,12 +68,16 @@ class Team(models.Model):
             raise ValidationError("Team cannot have more than 2 active problems!")
 
     def can_request_problem(self):
-        if self.solvingattempt_set.filter(state='S').count() >= 2:
+        if self.solvingattempt_set.filter(state='S').count() >= 4:
             raise ValidationError("Team cannot have more than 2 active problems!")
 
     def can_request_duel(self):
         if self.current_duels_count > 0:
             raise ValidationError(f"Team {str(self)} cannot have more than one duel at a time")
+
+    @property
+    def current_problem_count(self):
+        return self.solvingattempt_set.filter(state='S').count()
 
     def current_duels_count(self):
         return self.duels.filter(to_returned=False).count() + self.duel_requests.filter(req_returned=False).count()

@@ -18,11 +18,12 @@ from .models import *
 
 @admin.register(Team)
 class TeamAdmin(admin.ModelAdmin):
-    list_display = ('id', 'name', 'score', 'current_duels_count', 'solved_problems', 'team_actions', )
+    list_display = ('id', 'name', 'score', 'current_duels_count', 'solved_problems', 'current_problem_count', 'team_actions', )
     readonly_fields = (
         'id',
         'team_actions'
     )
+    ordering = ('name',)
 
     def get_urls(self):
         urls = super().get_urls()
@@ -120,6 +121,7 @@ class TeamAdmin(admin.ModelAdmin):
 
         if request.method == 'POST':
             form = action_form(request.POST, team_id=team_id)
+            print(form)
             if form.is_valid():
                 try:
                     form.save()
@@ -134,7 +136,8 @@ class TeamAdmin(admin.ModelAdmin):
                     )
                     return HttpResponseRedirect(url)
             else:
-                self.message_user(request, "sth went wrong")
+                print(form.errors)
+                self.message_user(request, "sth went wrong" + str(form.errors))
 
         form = action_form(team_id=team_id)
         context = self.admin_site.each_context(request)
