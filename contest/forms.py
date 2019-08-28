@@ -85,7 +85,8 @@ class SetGradeForm(GeneralTeamForm):
                                     SolvingAttempt.objects.filter(team__in=(self.team_id, )).exclude(state='SD')))
         self.fields['problem'] = forms.ChoiceField(choices=problem_choices, required=True)
         self.fields['end_time'] = forms.DateTimeField(required=False)
-        self.fields['grade'] = forms.IntegerField(min_value=0, max_value=100, required=True)
+        self.fields['grade'] = forms.IntegerField(min_value=0, max_value=100, required=True,
+                choices=((0, 0), (25, 25), (50, 50), (75, 75), (100, 100)))
 
     def clean_end_time(self):
         end_time = self.cleaned_data.get('end_time')
